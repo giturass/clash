@@ -1,0 +1,317 @@
+mixed-port: 6080
+allow-lan: true
+bind-address: "*"
+authentication:
+  - "eric:xxxxxxxx"
+skip-auth-prefixes:
+  - 127.0.0.1/8
+  - ::1/128
+lan-allowed-ips:
+  - 0.0.0.0/0
+  - ::/0
+lan-disallowed-ips:
+  - 192.168.0.3/32
+mode: rule
+log-level: silent
+ipv6: true
+external-controller: 0.0.0.0:10000
+external-ui: ../files/ui
+external-ui-name: xd
+external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+# interface-name: en0 # 设置出口网卡
+# routing-mark:6666
+global-client-fingerprint: random
+
+profile:
+  store-selected: false
+  store-fake-ip: true
+
+geox-url:
+  geoip: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
+  geosite: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
+  mmdb: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.metadb"
+geo-auto-update: false
+geo-update-interval: 24
+
+dns:
+  cache-algorithm: arc
+  enable: true
+  prefer-h3: false
+  listen: 0.0.0.0:53
+  ipv6: false
+  ipv6-timeout: 300
+  default-nameserver:
+    - 1.1.1.1
+    - 223.5.5.5
+    - system
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  # use-hosts: true
+  respect-rules: false
+
+  nameserver:
+    - 1.1.1.1
+    - tls://223.5.5.5:853
+
+proxies:
+  - name: "TW"
+    type: ss
+    server: 
+    port: 
+    cipher: aes-256-gcm
+    password: ""
+    udp: true
+
+  - name: "Serv00"
+    type: vmess
+    server: 
+    port: 443
+    uuid: 
+    alterId: 0
+    cipher: none
+    udp: true
+    tls: true
+    client-fingerprint: random
+    skip-cert-verify: false
+    servername: 
+    network: ws
+    ws-opts:
+      path: /
+      headers:
+        Host: 
+
+  # vless
+  - name: "HK"
+    type: vless
+    server: 
+    port: 443
+    uuid: 
+    udp: true
+    tls: true
+    network: ws
+    client-fingerprint: random
+    servername: 
+    skip-cert-verify: false
+    ws-opts:
+      path: "/?ed=2048"
+      headers:
+        Host: 
+
+  - name: "US"
+    type: vless
+    server:
+    port: 443
+    uuid:
+    udp: true
+    tls: true
+    network: ws
+    client-fingerprint: random
+    servername:
+    skip-cert-verify: false
+    ws-opts:
+      path: "/?ed=2048"
+      headers:
+        Host:
+
+  - name: "SG"
+    type: vless
+    server:
+    port: 443
+    uuid:
+    udp: true
+    tls: true
+    network: ws
+    client-fingerprint: random
+    servername:
+    skip-cert-verify: false
+    ws-opts:
+      path: "/?ed=2048"
+      headers:
+        Host:
+
+  - name: "CMCC"
+    type: vless
+    server: ［]
+    port: 443
+    uuid:
+    udp: true
+    tls: true
+    network: ws
+    client-fingerprint: random
+    servername:
+    skip-cert-verify: false
+    ws-opts:
+      path: "/?ed=2048"
+      headers:
+        Host:
+
+proxy-groups:
+  - name: PROXY
+    type: select
+    # disable-udp: true
+    proxies:
+      - TW
+      - HK
+      - US
+      - SG
+      - CMCC
+      - Serv00
+
+rules:
+  - DOMAIN-KEYWORD,analytics,REJECT
+  - DOMAIN-KEYWORD,analysis,REJECT
+  - DOMAIN-KEYWORD,bdstatic,REJECT
+  - DOMAIN-KEYWORD,inmobi,REJECT
+  - DOMAIN-KEYWORD,doubleclick,REJECT
+  - DOMAIN-KEYWORD,umeng,REJECT
+  - DOMAIN-KEYWORD,wangmeng,REJECT
+  - DOMAIN-KEYWORD,alimama,REJECT
+  - DOMAIN-KEYWORD,tanx,REJECT
+  - DOMAIN-KEYWORD,adsrvr,REJECT
+  - DOMAIN-KEYWORD,supersonicads,REJECT
+  - DOMAIN-KEYWORD,trafficjunky,REJECT
+  - DOMAIN-KEYWORD,adservice,REJECT
+  - DOMAIN-KEYWORD,adserver,REJECT
+  - DOMAIN-KEYWORD,admaster,REJECT
+  - DOMAIN-KEYWORD,taboola,REJECT
+  - DOMAIN-KEYWORD,crashlytics,REJECT
+  - DOMAIN-KEYWORD,firebase,REJECT
+  - DOMAIN-KEYWORD,adsmind,REJECT
+  - DOMAIN-KEYWORD,meituan,DIRECT
+  - DOMAIN-KEYWORD,sina,DIRECT
+  - DOMAIN-KEYWORD,weibo,DIRECT
+  - DOMAIN-KEYWORD,alipay,DIRECT
+  - DOMAIN-KEYWORD,alicdn,DIRECT
+  - DOMAIN-KEYWORD,taobao,DIRECT
+  - DOMAIN-KEYWORD,netease,DIRECT
+  - DOMAIN-KEYWORD,baidu,DIRECT
+  - DOMAIN-KEYWORD,10086,DIRECT
+  - DOMAIN-KEYWORD,jianshu,DIRECT
+  - DOMAIN-KEYWORD,bilibili,DIRECT
+  - DOMAIN-KEYWORD,biliapi,DIRECT
+  - DOMAIN-KEYWORD,bilivideo,DIRECT
+  - DOMAIN-KEYWORD,google,PROXY
+  - DOMAIN-KEYWORD,facebook,PROXY
+  - DOMAIN-KEYWORD,github,PROXY
+  - DOMAIN-KEYWORD,gitlab,PROXY
+  - DOMAIN-KEYWORD,v2ex,PROXY
+  - DOMAIN-KEYWORD,wikipedia,PROXY
+  - DOMAIN-KEYWORD,wikimedia,PROXY
+  - DOMAIN-KEYWORD,amazon,PROXY
+  - DOMAIN-KEYWORD,blogspot,PROXY
+  - DOMAIN-KEYWORD,digitalocean,PROXY
+  - DOMAIN-KEYWORD,ampproject,PROXY
+  - DOMAIN-KEYWORD,discord,PROXY
+  - DOMAIN-KEYWORD,microsoft,PROXY
+  - DOMAIN-SUFFIX,vivo.com.cn,REJECT
+  - DOMAIN-SUFFIX,avlyun.com,REJECT
+  - DOMAIN-SUFFIX,firebase.io,REJECT
+  - DOMAIN-SUFFIX,360.cn,REJECT
+  - DOMAIN-SUFFIX,psbc.com,DIRECT
+  - DOMAIN-SUFFIX,cagesblog.com,DIRECT
+  - DOMAIN-SUFFIX,163.com,DIRECT
+  - DOMAIN-SUFFIX,126.net,DIRECT
+  - DOMAIN-SUFFIX,pximg.net,DIRECT
+  - DOMAIN-SUFFIX,zhimg.com,DIRECT
+  - DOMAIN-SUFFIX,zhihu.com,DIRECT
+  - DOMAIN-SUFFIX,cmbchina.com,DIRECT
+  - DOMAIN-SUFFIX,iqiyi.com,DIRECT
+  - DOMAIN-SUFFIX,qiyipic.com,DIRECT
+  - DOMAIN-SUFFIX,amap.com,DIRECT
+  - DOMAIN-SUFFIX,autonavi.com,DIRECT
+  - DOMAIN-SUFFIX,hdslb.com,DIRECT
+  - DOMAIN-SUFFIX,acgvideo.com,DIRECT
+  - DOMAIN-SUFFIX,qq.com,DIRECT
+  - DOMAIN-SUFFIX,qqmail.com,DIRECT
+  - DOMAIN-SUFFIX,qpic.cn,DIRECT
+  - DOMAIN-SUFFIX,gtimg.cn,DIRECT
+  - DOMAIN-SUFFIX,tenpay.com,DIRECT
+  - DOMAIN-SUFFIX,servicewechat.com,DIRECT
+  - DOMAIN-SUFFIX,aliyundrive.com,DIRECT
+  - DOMAIN-SUFFIX,alicloudccp.com,DIRECT
+  - DOMAIN-SUFFIX,cherrytv.one,DIRECT
+  - DOMAIN-SUFFIX,serv00.com,DIRECT
+  - DOMAIN-SUFFIX,local,DIRECT
+  - DOMAIN-SUFFIX,kiwibrowser.com,PROXY
+  - DOMAIN-SUFFIX,amplitude.com,PROXY
+  - DOMAIN-SUFFIX,amazon.com,PROXY
+  - DOMAIN-SUFFIX,amazonaws.com,PROXY
+  - DOMAIN-SUFFIX,1drv.com,PROXY
+  - DOMAIN-SUFFIX,hotmail.com,PROXY
+  - DOMAIN-SUFFIX,icloud.com,PROXY
+  - DOMAIN-SUFFIX,inoreader.com,PROXY
+  - DOMAIN-SUFFIX,android.com,PROXY
+  - DOMAIN-SUFFIX,gvt0.com,PROXY
+  - DOMAIN-SUFFIX,gvt1.com,PROXY
+  - DOMAIN-SUFFIX,gvt2.com,PROXY
+  - DOMAIN-SUFFIX,gvt3.com,PROXY
+  - DOMAIN-SUFFIX,appspot.com,PROXY
+  - DOMAIN-SUFFIX,googleapis.cn,PROXY
+  - DOMAIN-SUFFIX,ggpht.com,PROXY
+  - DOMAIN-SUFFIX,gstatic.com,PROXY
+  - DOMAIN-SUFFIX,gstatic.cn,PROXY
+  - DOMAIN-SUFFIX,gmail.com,PROXY
+  - DOMAIN-SUFFIX,youtube.com,PROXY
+  - DOMAIN-SUFFIX,youtu.be,PROXY
+  - DOMAIN-SUFFIX,ytimg.com,PROXY
+  - DOMAIN-SUFFIX,g.co,PROXY
+  - DOMAIN-SUFFIX,goo.gl,PROXY
+  - DOMAIN-SUFFIX,twitter.com,PROXY
+  - DOMAIN-SUFFIX,twimg.com,PROXY
+  - DOMAIN-SUFFIX,t.co,PROXY
+  - DOMAIN-SUFFIX,bit.ly,PROXY
+  - DOMAIN-SUFFIX,instagram.com,PROXY
+  - DOMAIN-SUFFIX,fbcdn.net,PROXY
+  - DOMAIN-SUFFIX,fb.me,PROXY
+  - DOMAIN-SUFFIX,dropbox.com,PROXY
+  - DOMAIN-SUFFIX,dropboxapi.com,PROXY
+  - DOMAIN-SUFFIX,dropboxstatic.com,PROXY
+  - DOMAIN-SUFFIX,dropboxusercontent.com,PROXY
+  - DOMAIN-SUFFIX,telegram.org,PROXY
+  - DOMAIN-SUFFIX,telegram-cdn.org,PROXY
+  - DOMAIN-SUFFIX,telegram.me,PROXY
+  - DOMAIN-SUFFIX,telegra.ph,PROXY
+  - DOMAIN-SUFFIX,t.me,PROXY
+  - DOMAIN-SUFFIX,cloudflare.com,PROXY
+  - DOMAIN-SUFFIX,wordpress.com,PROXY
+  - DOMAIN-SUFFIX,pixiv.net,PROXY
+  - DOMAIN-SUFFIX,dmc.nico,PROXY
+  - DOMAIN-SUFFIX,nicovideo.jp,PROXY
+  - DOMAIN-SUFFIX,cdninstagram.com,PROXY
+  - DOMAIN-SUFFIX,xlog.app,PROXY
+  - DOMAIN-SUFFIX,bing.com,PROXY
+  - DOMAIN-SUFFIX,live.com,PROXY
+  - DOMAIN-SUFFIX,msftauth.net,PROXY
+  - DOMAIN-SUFFIX,msauth.net,PROXY
+  - DOMAIN-SUFFIX,office.com,PROXY
+  - DOMAIN-SUFFIX,sharepoint.com,PROXY
+  - DOMAIN-SUFFIX,spotify.com,PROXY
+  - DOMAIN-SUFFIX,terabox.com,PROXY
+  - DOMAIN-SUFFIX,office365.com,PROXY
+  - IP-CIDR,91.108.56.0/22,PROXY,no-resolve
+  - IP-CIDR,91.108.4.0/22,PROXY,no-resolve
+  - IP-CIDR,91.108.8.0/22,PROXY,no-resolve
+  - IP-CIDR,91.108.16.0/22,PROXY,no-resolve
+  - IP-CIDR,91.108.12.0/22,PROXY,no-resolve
+  - IP-CIDR,149.154.160.0/20,PROXY,no-resolve
+  - IP-CIDR,91.105.192.0/23,PROXY,no-resolve
+  - IP-CIDR,91.108.20.0/22,PROXY,no-resolve
+  - IP-CIDR,185.76.151.0/24,PROXY,no-resolve
+  - IP-CIDR,109.239.140.0/24,PROXY,no-resolve
+  - IP-CIDR,149.154.164.0/22,PROXY,no-resolve
+  - IP-CIDR,149.154.172.0/22,PROXY,no-resolve
+  - IP-CIDR,5.28.192.0/18,PROXY,no-resolve
+  - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+  - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,100.64.0.0/10,DIRECT,no-resolve
+  - IP-CIDR,224.0.0.0/4,DIRECT,no-resolve
+  - IP-CIDR,112.53.48.186/32,DIRECT,no-resolve
+  - IP-CIDR,223.76.255.250/32,DIRECT,no-resolve
+  - IP-CIDR,120.241.131.99/32,DIRECT,no-resolve
+  - IP-CIDR,49.51.190.94/32,DIRECT,no-resolve
+  - IP-CIDR,111.6.190.180/32,DIRECT,no-resolve
+  - GEOIP,LAN,DIRECT,no-resolve
+  - GEOIP,CN,DIRECT
+  - MATCH,PROXY
